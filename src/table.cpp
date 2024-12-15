@@ -1,4 +1,5 @@
 #include "table.h"
+#include <file_manager.h>
 
 /*
 Класс Table является оберткой над FileManager
@@ -13,4 +14,40 @@ TODO:
 
 Table::Table(const string &file_path, const string &name, const vector<Column> &columns) : file(FileManager(file_path)){
     file.create_table(name, columns);
+}
+
+vector<vector<string>> Table::select(const string &column_name, const string &condition, const int &num) {
+    vector<vector<string>> all = file.select_all();
+    int id = 0;
+    for (int i = 0; i < file.columns.size(); i++) {
+        if (column_name == file.columns[i].name) {
+            id = i;
+            break;
+        }
+    }
+    vector<vector<string>> ans;
+    for (auto & i : all) {
+        if (condition == "=") {
+            try {
+                if (stoi(i[id]) == num) {
+                    ans.push_back(i);
+                }
+            } catch (...) {}
+        }
+        if (condition == ">") {
+            try {
+                if (stoi(i[id]) > num) {
+                    ans.push_back(i);
+                }
+            } catch (...) {}
+        }
+        if (condition == "<") {
+            try {
+                if (stoi(i[id]) < num) {
+                    ans.push_back(i);
+                }
+            } catch (...) {}
+        }
+    }
+    return ans;
 }

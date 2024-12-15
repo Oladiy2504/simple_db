@@ -14,5 +14,5 @@ public:
 
     void remove(const string& condition);
 
-    vector<vector<string>> select(const string& condition);
+    vector<vector<string>> select(const string &column_name, const string& condition, const int &num);
 };

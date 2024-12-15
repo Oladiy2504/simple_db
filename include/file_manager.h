@@ -15,7 +15,6 @@ class FileManager {
     string file_path;
 
     string table_name;
-    vector<Column> columns;
 
     void read_metadata();
 
@@ -24,6 +23,8 @@ class FileManager {
     void check_column_datatype(const string &data, size_t i);
 
 public:
+    vector<Column> columns;
+
     explicit FileManager(const string &file_path);
 
     void create_table(const string &name, const vector<Column> &columns);
