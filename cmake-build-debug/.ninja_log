@@ -1,0 +1,5 @@
+# ninja log v6
+1	181	7559209270571623	build.ninja	fc6ebbf0688e98
+2	169	7559016941096431	CMakeFiles/simpledb.dir/src/main.cpp.obj	57e7fe45ad01000b
+13	35	7559015168085437	CMakeFiles/simpledb.dir/src/table.cpp.obj	50ebce29e7c73481
+169	208	7559016942756602	simpledb.exe	9c34d776731d62eb
