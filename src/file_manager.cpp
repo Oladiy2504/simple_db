@@ -149,3 +149,97 @@ vector<vector<string> > FileManager::select_all() {
     }
     return rows;
 }
+
+// Находит строки с указанным значением в столбце условия и заменяет значение в обновляемом столбце на новое
+void FileManager::update_row(const string &column_name, const string &new_value, const string &condition_column, const string &condition_value) {
+    if (columns.empty()) {
+        throw runtime_error("No columns found in the table!");
+    }
+
+    size_t condition_index = SIZE_MAX;
+    for (size_t i = 0; i < columns.size(); ++i) {
+        if (columns[i].name == condition_column) {
+            condition_index = i;
+            break;
+        }
+    }
+
+    if (condition_index == SIZE_MAX) {
+        throw runtime_error("Condition column not found");
+    }
+
+    vector<vector<string>> rows = select_all();
+
+    for (auto &row : rows) {
+        if (row[condition_index] == condition_value) {
+            size_t update_index = SIZE_MAX;
+            for (size_t i = 0; i < columns.size(); ++i) {
+                if (columns[i].name == column_name) {
+                    update_index = i;
+                    break;
+                }
+            }
+            if (update_index != SIZE_MAX) {
+                row[update_index] = new_value;
+            }
+        }
+    }
+
+    ofstream file(file_path, ios::binary | ios::trunc);
+    if (!file.is_open()) {
+        throw runtime_error("Failed to open file for writing updated rows");
+    }
+
+    for (const auto &row : rows) {
+        for (const auto &data : row) {
+            size_t length = data.length();
+            file.write(reinterpret_cast<char *>(&length), sizeof(length));
+            file.write(data.data(), length);
+        }
+    }
+    file.close();
+}
+
+// Читает все строки, фильтрует те, которые соответствуют условию, и записывает оставшиеся строки обратно в файл
+void FileManager::delete_row(const string &condition_column, const string &condition_value) {
+    if (columns.empty()) {
+        throw runtime_error("No columns found in the table!");
+    }
+
+    size_t condition_index = SIZE_MAX;
+    for (size_t i = 0; i < columns.size(); ++i) {
+        if (columns[i].name == condition_column) {
+            condition_index = i;
+            break;
+        }
+    }
+
+    if (condition_index == SIZE_MAX) {
+        throw runtime_error("Condition column not found");
+    }
+
+    vector<vector<string>> rows = select_all();
+
+    vector<vector<string>> filtered_rows;
+    for (const auto &row : rows) {
+        if (row[condition_index] != condition_value) {
+            filtered_rows.push_back(row);
+        }
+    }
+
+    ofstream file(file_path, ios::binary | ios::trunc);
+    if (!file.is_open()) {
+        throw runtime_error("Failed to open file for writing remaining rows");
+    }
+
+    for (const auto &row : filtered_rows) {
+        for (const auto &data : row) {
+            size_t length = data.length();
+
+            file.write(reinterpret_cast<char *>(&length), sizeof(length));
+            file.write(data.data(), length);
+        }
+    }
+    file.close();
+}
+

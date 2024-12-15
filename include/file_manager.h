@@ -31,5 +31,9 @@ public:
 
     void write_row(const vector<string> &row);
 
+    void update_row(const string &column_name, const string &new_value, const string &condition_column, const string &condition_value);
+
+    void delete_row(const string &condition_column, const string &condition_value);
+
     vector<vector<string>> select_all();
 };
