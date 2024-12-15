@@ -39,7 +39,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "simpledb::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-simpledb-Debug-a3f0c86f980e4abdc678.json",
+					"jsonFile" : "target-simpledb-Debug-98b16cb40dfd1cf1f4a6.json",
 					"name" : "simpledb",
 					"projectIndex" : 0
 				}
@@ -49,12 +49,12 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "D:/Projects/simple_db/cmake-build-debug",
-		"source" : "D:/Projects/simple_db"
+		"build" : "C:/Users/konsb/CLionProjects/simple_db/cmake-build-debug",
+		"source" : "C:/Users/konsb/CLionProjects/simple_db"
 	},
 	"version" : 
 	{
 		"major" : 2,
-		"minor" : 6
+		"minor" : 7
 	}
 }
