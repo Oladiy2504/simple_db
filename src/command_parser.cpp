@@ -18,27 +18,27 @@ pair<int, smatch> SimpleDBParser::parse(const string& command) {
 
     if (regex_match(trimmedCommand, match, createTableRegex)) {
         // создание новой таблицы
-        return make_pair(1, match);
+        return make_pair(CREATE_TABLE, match);
     }
 
     if (regex_match(trimmedCommand, match, insertIntoRegex)) {
         // вставить значение
-        return make_pair(2, match);
+        return make_pair(INSERT, match);
     }
 
     if (regex_match(trimmedCommand, match, selectRegex)) {
         // поиск записи
-        return make_pair(3, match);
+        return make_pair(SELECT, match);
     }
 
     if (regex_match(trimmedCommand, match, updateRegex)) {
         // обновление записи
-        return make_pair(4, match);
+        return make_pair(UPDATE, match);
     }
 
     if (regex_match(trimmedCommand, match, deleteRegex)) {
-            // удаление записи
-            return make_pair(5, match);
+        // удаление записи
+        return make_pair(DELETE, match);
     }
 
     return make_pair(-1, match);

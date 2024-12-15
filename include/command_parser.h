@@ -1,6 +1,14 @@
 #pragma once
 #include <includes.h>
 
+enum Types {
+    ERROR = -1,
+    CREATE_TABLE = 1,
+    INSERT = 2,
+    SELECT = 3,
+    UPDATE = 4,
+    DELETE = 5
+};
 
 class SimpleDBParser {
 public:
