@@ -151,50 +151,28 @@ vector<vector<string> > FileManager::select_all() {
 }
 
 // Находит строки с указанным значением в столбце условия и заменяет значение в обновляемом столбце на новое
-void FileManager::update_row(const string &column_name, const string &new_value, const string &condition_column, const string &condition_value) {
-    if (columns.empty()) {
-        throw runtime_error("No columns found in the table!");
-    }
-
-    size_t condition_index = SIZE_MAX;
-    for (size_t i = 0; i < columns.size(); ++i) {
-        if (columns[i].name == condition_column) {
-            condition_index = i;
-            break;
-        }
-    }
-
-    if (condition_index == SIZE_MAX) {
-        throw runtime_error("Condition column not found");
-    }
-
-    vector<vector<string>> rows = select_all();
-
-    for (auto &row : rows) {
-        if (row[condition_index] == condition_value) {
-            size_t update_index = SIZE_MAX;
-            for (size_t i = 0; i < columns.size(); ++i) {
-                if (columns[i].name == column_name) {
-                    update_index = i;
-                    break;
-                }
-            }
-            if (update_index != SIZE_MAX) {
-                row[update_index] = new_value;
-            }
-        }
-    }
-
-    ofstream file(file_path, ios::binary | ios::trunc);
+void FileManager::update_row(vector<vector<string>> &rows) {
+    ofstream file(file_path, ios::binary);
     if (!file.is_open()) {
         throw runtime_error("Failed to open file for writing updated rows");
     }
 
+    file.seekp(0, ios::end);
+    size_t file_length = file.tellp();
+    size_t metadata_size = sizeof(size_t) + table_name.size();
+    for (const auto &col: columns) {
+        metadata_size += sizeof(size_t);
+        metadata_size += col.name.size();
+        metadata_size += sizeof(Types);
+    }
+    file.seekp(static_cast<streamoff>(metadata_size), ios::beg);
+
     for (const auto &row : rows) {
-        for (const auto &data : row) {
-            size_t length = data.length();
+        for (size_t i = 0; i < row.size(); ++i) {
+            check_column_datatype(row[i], i);
+            size_t length = row[i].length();
             file.write(reinterpret_cast<char *>(&length), sizeof(length));
-            file.write(data.data(), length);
+            file.write(row[i].data(), length);
         }
     }
     file.close();

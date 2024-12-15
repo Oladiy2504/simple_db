@@ -1,5 +1,9 @@
 #include <command_parser.h>
 
+/*
+TODO: Расширить парсер, пока что не очень работоспособен и не совсем согласуется с остальными модулями
+*/
+
 
 string SimpleDBParser::trim(const string& str) {
     const size_t first = str.find_first_not_of(" \t\n\r");

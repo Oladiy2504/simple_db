@@ -10,6 +10,12 @@ enum Types {
     DELETE = 5
 };
 
+enum Condition {
+    EQUAL = 0,
+    GREATER = 1,
+    LESS = 2
+};
+
 class SimpleDBParser {
 public:
     static string trim(const string& str);
