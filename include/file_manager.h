@@ -31,9 +31,9 @@ public:
 
     void write_row(const vector<string> &row);
 
-    void update_row(vector<vector<string>> &rows);
+    void update_rows(vector<vector<string>> &rows);
 
-    void delete_row(vector<vector<string>> &rows);
+    void overwrite_rows(vector<vector<string>> &rows);
 
     vector<vector<string>> select_all();
 };

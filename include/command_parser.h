@@ -11,10 +11,10 @@ enum Command_Types {
 };
 
 enum Condition {
-    EQUAL = 0,
-    GREATER = 1,
-    LESS = 2,
-    ALL = 3
+    ALL = 0,
+    EQUAL = 1,
+    GREATER = 2,
+    LESS = 3
 };
 
 class SimpleDBParser {

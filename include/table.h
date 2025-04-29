@@ -8,6 +8,8 @@ class Table {
 
     bool condition_check(const string &real_value, const string &value, Condition condition, int type);
 
+    size_t get_column_index(const string &column_name);
+
 public:
     Table(const string& file_path, const string& name, const vector<Column> &columns);
 
@@ -15,7 +17,7 @@ public:
 
     void update(const string &column_name, Condition condition, const string &condition_column, const string &value, const string &condition_value);
 
-    void remove(Condition condition, const string &condition_column, const string &value, const string &condition_value);
+    void remove(Condition condition, const string &condition_column, const string &condition_value);
 
-    vector<vector<string>> select(const string &column_name, Condition condition, const int &num);
+    vector<vector<string>> select(Condition condition, const string &condition_column, const string &condition_value);
 };

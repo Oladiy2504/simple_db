@@ -3,8 +3,6 @@
 /*
 Класс Table является оберткой над FileManager
 Он по большей части передает операции методам FileManager, предварительно обрабатывая их, если нужно
-
-TODO: Добавить проверки условий в select и перетащить частично remove из file_manager.cpp
 */
 
 Table::Table(const string &file_path, const string &name,
@@ -22,39 +20,47 @@ bool Table::condition_check(const string &curr_value, const string &check_value,
         throw runtime_error("Types mismatch for update");
     }
     if (check_type == 0) {
-        if (condition > 0) {
+        if (condition > 1) {
             throw runtime_error("Less or greater condition can not be used with TEXT datatype");
         }
-        return curr_value == check_value;
+        return condition == ALL || curr_value == check_value;
     }
     size_t check_n = stoi(check_value);
     size_t curr_n = stoi(curr_value);
-    if (condition == 0) {
+    if (condition == EQUAL) {
         return check_n == curr_n;
     }
-    if (condition == 1) {
+    if (condition == GREATER) {
         return curr_n > check_n;
     }
-    return curr_n < check_n;
+    if (condition == LESS) {
+        return curr_n < check_n;
+    }
+    return true;
 }
 
-
-void Table::update(const string &column_name, Condition condition, const string &condition_column, const string &value, const string &condition_value) {
+size_t Table::get_column_index(const string &column_name) {
     size_t column_ind = SIZE_MAX;
-    size_t condition_column_ind = SIZE_MAX;
 
     for (size_t i = 0; i < file.columns.size(); ++i) {
         if (file.columns[i].name == column_name) {
             column_ind = i;
-        }
-        if (file.columns[i].name == condition_column) {
-            condition_column_ind = i;
+            break;
         }
     }
 
-    if (column_ind == SIZE_MAX || condition_column_ind == SIZE_MAX) {
-        throw runtime_error("One of the columns not found");
+    if (column_ind == SIZE_MAX) {
+        throw runtime_error(column_name + " column not found");
     }
+
+    return column_ind;
+}
+
+
+void Table::update(const string &column_name, Condition condition, const string &condition_column, const string &value,
+                   const string &condition_value) {
+    size_t column_ind = get_column_index(column_name);
+    size_t condition_column_ind = get_column_index(condition_column);
 
     auto rows = file.select_all();
     for (size_t i = 0; i < rows.size(); ++i) {
@@ -63,25 +69,15 @@ void Table::update(const string &column_name, Condition condition, const string 
         }
     }
     if (!rows.empty()) {
-        file.update_row(rows);
+        file.update_rows(rows);
     }
 }
 
-void Table::remove(Condition condition, const string &condition_column, const string &value, const string &condition_value) {
-    size_t condition_column_ind = SIZE_MAX;
-
-    for (size_t i = 0; i < file.columns.size(); ++i) {
-        if (file.columns[i].name == condition_column) {
-            condition_column_ind = i;
-        }
-    }
-
-    if (condition_column_ind == SIZE_MAX) {
-        throw runtime_error("Condition column not found");
-    }
+void Table::remove(Condition condition, const string &condition_column, const string &condition_value) {
+    size_t condition_column_ind = get_column_index(condition_column);
 
     auto rows = file.select_all();
-    vector<vector<string>> new_rows;
+    vector<vector<string> > new_rows;
     copy(begin(rows), end(rows), new_rows);
     for (size_t i = 0; i < rows.size(); ++i) {
         if (condition_check(rows[i][condition_column_ind], condition_value, condition, file.columns[i].type)) {
@@ -89,45 +85,24 @@ void Table::remove(Condition condition, const string &condition_column, const st
         }
     }
     if (!new_rows.empty()) {
-        file.delete_row(new_rows);
+        file.overwrite_rows(new_rows);
     }
 }
 
-vector<vector<string> > Table::select(const string &column_name, Condition condition, const int &num) {
-    auto all = file.select_all();
-    int id = 0;
-    for (int i = 0; i < file.columns.size(); i++) {
-        if (column_name == file.columns[i].name) {
-            id = i;
-            break;
+vector<vector<string> > Table::select(Condition condition, const string &condition_column,
+                                      const string &condition_value) {
+    auto rows = file.select_all();
+    size_t condition_column_ind = get_column_index(condition_column);
+
+    if (condition == ALL) {
+        return rows;
+    }
+
+    vector<vector<string> > filtered_rows;
+    for (size_t i = 0; i < rows.size(); ++i) {
+        if (condition_check(rows[i][condition_column_ind], condition_value, condition, file.columns[i].type)) {
+            filtered_rows.push_back(rows[i]);
         }
     }
-    vector<vector<string> > ans;
-    for (auto &i: all) {
-        if (condition == 0) {
-            try {
-                if (stoi(i[id]) == num) {
-                    ans.push_back(i);
-                }
-            } catch (...) {
-            }
-        }
-        if (condition == 1) {
-            try {
-                if (stoi(i[id]) > num) {
-                    ans.push_back(i);
-                }
-            } catch (...) {
-            }
-        }
-        if (condition == 2) {
-            try {
-                if (stoi(i[id]) < num) {
-                    ans.push_back(i);
-                }
-            } catch (...) {
-            }
-        }
-    }
-    return ans;
+    return filtered_rows;
 }

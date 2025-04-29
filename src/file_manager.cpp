@@ -150,7 +150,7 @@ vector<vector<string> > FileManager::select_all() {
     return rows;
 }
 
-void FileManager::update_row(vector<vector<string>> &rows) {
+void FileManager::update_rows(vector<vector<string>> &rows) {
     ofstream file(file_path, ios::binary);
     if (!file.is_open()) {
         throw runtime_error("Failed to open file for writing updated rows");
@@ -178,22 +178,10 @@ void FileManager::update_row(vector<vector<string>> &rows) {
 }
 
 // Перезапись строк после удаления
-void FileManager::delete_row(vector<vector<string>> &rows) {
-
-
-    ofstream file(file_path, ios::binary | ios::trunc);
-    if (!file.is_open()) {
-        throw runtime_error("Failed to open file for writing remaining rows");
+void FileManager::overwrite_rows(vector<vector<string>> &rows) {
+    write_metadata();
+    for (auto &row : rows) {
+        write_row(row);
     }
-
-    for (const auto &row : filtered_rows) {
-        for (const auto &data : row) {
-            size_t length = data.length();
-
-            file.write(reinterpret_cast<char *>(&length), sizeof(length));
-            file.write(data.data(), length);
-        }
-    }
-    file.close();
 }
 
