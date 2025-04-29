@@ -1,5 +1,5 @@
 #pragma once
-#include<includes.h>
+#include <includes.h>
 
 enum Types {
     TEXT = 0,
@@ -33,7 +33,7 @@ public:
 
     void update_row(vector<vector<string>> &rows);
 
-    void delete_row(const string &condition_column, const string &condition_value);
+    void delete_row(vector<vector<string>> &rows);
 
     vector<vector<string>> select_all();
 };

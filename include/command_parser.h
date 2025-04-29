@@ -1,7 +1,7 @@
 #pragma once
 #include <includes.h>
 
-enum Types {
+enum Command_Types {
     ERROR = -1,
     CREATE_TABLE = 1,
     INSERT = 2,
@@ -13,7 +13,8 @@ enum Types {
 enum Condition {
     EQUAL = 0,
     GREATER = 1,
-    LESS = 2
+    LESS = 2,
+    ALL = 3
 };
 
 class SimpleDBParser {

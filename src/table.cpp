@@ -53,7 +53,7 @@ void Table::update(const string &column_name, Condition condition, const string 
     }
 
     if (column_ind == SIZE_MAX || condition_column_ind == SIZE_MAX) {
-        throw runtime_error("Column for update not found");
+        throw runtime_error("One of the columns not found");
     }
 
     auto rows = file.select_all();
@@ -64,6 +64,32 @@ void Table::update(const string &column_name, Condition condition, const string 
     }
     if (!rows.empty()) {
         file.update_row(rows);
+    }
+}
+
+void Table::remove(Condition condition, const string &condition_column, const string &value, const string &condition_value) {
+    size_t condition_column_ind = SIZE_MAX;
+
+    for (size_t i = 0; i < file.columns.size(); ++i) {
+        if (file.columns[i].name == condition_column) {
+            condition_column_ind = i;
+        }
+    }
+
+    if (condition_column_ind == SIZE_MAX) {
+        throw runtime_error("Condition column not found");
+    }
+
+    auto rows = file.select_all();
+    vector<vector<string>> new_rows;
+    copy(begin(rows), end(rows), new_rows);
+    for (size_t i = 0; i < rows.size(); ++i) {
+        if (condition_check(rows[i][condition_column_ind], condition_value, condition, file.columns[i].type)) {
+            new_rows.erase(new_rows.begin() + i);
+        }
+    }
+    if (!new_rows.empty()) {
+        file.delete_row(new_rows);
     }
 }
 

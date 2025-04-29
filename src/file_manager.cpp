@@ -150,7 +150,6 @@ vector<vector<string> > FileManager::select_all() {
     return rows;
 }
 
-// Находит строки с указанным значением в столбце условия и заменяет значение в обновляемом столбце на новое
 void FileManager::update_row(vector<vector<string>> &rows) {
     ofstream file(file_path, ios::binary);
     if (!file.is_open()) {
@@ -178,32 +177,9 @@ void FileManager::update_row(vector<vector<string>> &rows) {
     file.close();
 }
 
-// Читает все строки, фильтрует те, которые соответствуют условию, и записывает оставшиеся строки обратно в файл
-void FileManager::delete_row(const string &condition_column, const string &condition_value) {
-    if (columns.empty()) {
-        throw runtime_error("No columns found in the table!");
-    }
+// Перезапись строк после удаления
+void FileManager::delete_row(vector<vector<string>> &rows) {
 
-    size_t condition_index = SIZE_MAX;
-    for (size_t i = 0; i < columns.size(); ++i) {
-        if (columns[i].name == condition_column) {
-            condition_index = i;
-            break;
-        }
-    }
-
-    if (condition_index == SIZE_MAX) {
-        throw runtime_error("Condition column not found");
-    }
-
-    vector<vector<string>> rows = select_all();
-
-    vector<vector<string>> filtered_rows;
-    for (const auto &row : rows) {
-        if (row[condition_index] != condition_value) {
-            filtered_rows.push_back(row);
-        }
-    }
 
     ofstream file(file_path, ios::binary | ios::trunc);
     if (!file.is_open()) {

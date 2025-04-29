@@ -1,7 +1,7 @@
 #pragma once
 #include<includes.h>
 #include<file_manager.h>
-#include <command_parser.h>
+#include<command_parser.h>
 
 class Table {
     FileManager file;
@@ -15,7 +15,7 @@ public:
 
     void update(const string &column_name, Condition condition, const string &condition_column, const string &value, const string &condition_value);
 
-    void remove(const string& condition);
+    void remove(Condition condition, const string &condition_column, const string &value, const string &condition_value);
 
     vector<vector<string>> select(const string &column_name, Condition condition, const int &num);
 };
