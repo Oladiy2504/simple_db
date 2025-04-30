@@ -11,21 +11,46 @@ enum Command_Types {
 };
 
 enum Condition {
+    ERROR_COND = -1,
     ALL = 0,
     EQUAL = 1,
-    GREATER = 2,
-    LESS = 3
+    NOT_EQUAL = 2,
+    GREATER = 3,
+    LESS = 4,
+    GREATER_EQUAL = 5,
+    LESS_EQUAL = 6
+};
+
+struct ParsedCommand {
+    Command_Types type = ERROR;
+    string table_name;
+
+    // Для CREATE TABLE
+    vector<pair<string, string>> new_columns; // {name, type}
+
+    // Для SELECT
+    string columns;
+    string values;
+    string where_column;
+    Condition where_condition = ALL;
+    string where_value;
 };
 
 class SimpleDBParser {
 public:
     static string trim(const string& str);
-    pair<int, smatch> parse(const string& command);
+
+    ParsedCommand parse(const string &command) const;
 
 private:
-    std::regex createTableRegex{R"(CREATE TABLE (\w+) \((.*?)\);)"};
-    std::regex insertIntoRegex{R"(INSERT INTO (\w+) \((.*?)\) VALUES \((.*?)\);)"};
-    std::regex selectRegex{R"(SELECT (.*?) FROM (\w+)( WHERE (.*))?;)"};
-    std::regex updateRegex{R"(UPDATE (\w+) SET (.*?) WHERE (.*);)"};
-    std::regex deleteRegex{R"(DELETE FROM (\w+) WHERE (.*);)"};
+    std::regex createTableRegex{R"(^CREATE\s+TABLE\s+(\w+)\s*$\s*([^()]*)\s*$\s*;\s*$)"};
+    std::regex insertIntoRegex{R"(^INSERT\s+INTO\s+(\w+)\s*$\s*([^()]*)\s*$\s+VALUES\s*$\s*([^()]*)\s*$\s*;\s*$)"};
+    std::regex selectRegex{R"(^SELECT\s+(\*|[\w\s,]+)\s+FROM\s+(\w+)(?:\s+WHERE\s+(.*?))?(?:\s+ORDER\s+BY\s+([\w\s,]+))?\s*;\s*$)"};
+    std::regex updateRegex{R"(^UPDATE\s+(\w+)\s+SET\s+(.*?)\s+WHERE\s+(.*?)\s*;\s*$)"};
+    std::regex deleteRegex{R"(^DELETE\s+FROM\s+(\w+)(?:\s+WHERE\s+(.*?))?\s*;\s*$)"};
+
+    // Не не не, помощь ПОМОЩЬ
+    static vector<string> splitIdentifiers(const string& input);
+    static Condition parseCondition(const string& op);
+    static pair<string, string> extractColumnAndValue(const string& condition, string& op);
 };
