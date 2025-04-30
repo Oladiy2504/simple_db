@@ -52,6 +52,9 @@ simpledb> UPDATE users SET name = 'Super Admin' WHERE id = 1;
 
 # Удаление записи
 simpledb> DELETE FROM users WHERE id = 1;
+
+# Выход
+simpledb> QUIT
 ```
 
 ## Definition of Done
