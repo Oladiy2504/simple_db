@@ -1,9 +1,5 @@
 #include <command_parser.h>
 
-/*
-TODO: Расширить парсер, пока что не очень работоспособен и не совсем согласуется с остальными модулями
-*/
-
 // Удаление пробелов в начале и конце строки
 string SimpleDBParser::trim(const string& str) {
     const size_t first = str.find_first_not_of(" \t\n\r");
@@ -36,7 +32,7 @@ Condition SimpleDBParser::parseCondition(const string& op) {
     if (op == "!=") return NOT_EQUAL;
     if (op == ">=") return GREATER_EQUAL;
     if (op == "<=") return LESS_EQUAL;
-    return ERROR_COND; // Unknown condition
+    return ERROR_COND;
 }
 
 // Разделение строки на значения

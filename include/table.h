@@ -21,3 +21,5 @@ public:
 
     vector<vector<string>> select(Condition condition, const string &condition_column, const string &condition_value);
 };
+
+static bool string_is_integer(const std::string& s);

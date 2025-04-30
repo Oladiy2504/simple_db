@@ -1,3 +1,3 @@
-C:/Users/konsb/CLionProjects/simple_db/cmake-build-debug/CMakeFiles/simpledb.dir
-C:/Users/konsb/CLionProjects/simple_db/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/konsb/CLionProjects/simple_db/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+D:/Projects/simple_db/cmake-build-debug/CMakeFiles/simpledb.dir
+D:/Projects/simple_db/cmake-build-debug/CMakeFiles/edit_cache.dir
+D:/Projects/simple_db/cmake-build-debug/CMakeFiles/rebuild_cache.dir

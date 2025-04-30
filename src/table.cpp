@@ -5,6 +5,21 @@
 Он по большей части передает операции методам FileManager, предварительно обрабатывая их, если нужно
 */
 
+bool string_is_integer(const string &s) {
+    if (s.empty()) {
+        return false;
+    }
+
+    int start = 0;
+    if ((s[0] == '+' || s[0] == '-') && s.size() > 1) {
+        start = 1;
+    }
+    return std::all_of(s.begin() + start, s.end(),
+                       [](unsigned char c) { return isdigit(c); }
+    );
+}
+
+
 Table::Table(const string &file_path, const string &name,
              const vector<Column> &columns) : file(FileManager(file_path)) {
     file.create_table(name, columns);
@@ -15,7 +30,7 @@ void Table::insert(const vector<string> &values) {
 }
 
 bool Table::condition_check(const string &curr_value, const string &check_value, Condition condition, int curr_type) {
-    auto check_type = static_cast<int>(!data.empty() && all_of(data.begin(), data.end(), ::isdigit));
+    int check_type = string_is_integer(check_value);
     if (curr_type != check_type) {
         throw runtime_error("Types mismatch for update");
     }
@@ -78,7 +93,7 @@ void Table::remove(Condition condition, const string &condition_column, const st
 
     auto rows = file.select_all();
     vector<vector<string> > new_rows;
-    copy(begin(rows), end(rows), new_rows);
+    copy(rows.begin(), rows.end(), new_rows.begin());
     for (size_t i = 0; i < rows.size(); ++i) {
         if (condition_check(rows[i][condition_column_ind], condition_value, condition, file.columns[i].type)) {
             new_rows.erase(new_rows.begin() + i);

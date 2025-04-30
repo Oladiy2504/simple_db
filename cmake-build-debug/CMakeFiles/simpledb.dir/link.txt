@@ -1,3 +1,0 @@
-"C:\Program Files\JetBrains\CLion 2024.3.1\bin\cmake\win\x64\bin\cmake.exe" -E rm -f CMakeFiles\simpledb.dir/objects.a
-C:\PROGRA~1\JETBRA~1\CLION2~1.1\bin\mingw\bin\ar.exe qc CMakeFiles\simpledb.dir/objects.a @CMakeFiles\simpledb.dir\objects1.rsp
-C:\PROGRA~1\JETBRA~1\CLION2~1.1\bin\mingw\bin\G__~1.EXE -g -Wl,--whole-archive CMakeFiles\simpledb.dir/objects.a -Wl,--no-whole-archive -o simpledb.exe -Wl,--out-implib,libsimpledb.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\simpledb.dir\linkLibs.rsp

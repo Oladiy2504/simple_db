@@ -51,21 +51,28 @@ build cmake_object_order_depends_target_simpledb: phony || CMakeFiles/simpledb.d
 
 build CMakeFiles/simpledb.dir/src/main.cpp.obj: CXX_COMPILER__simpledb_unscanned_Debug D$:/Projects/simple_db/src/main.cpp || cmake_object_order_depends_target_simpledb
   DEP_FILE = CMakeFiles\simpledb.dir\src\main.cpp.obj.d
-  FLAGS = -g -fdiagnostics-color=always
+  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
   INCLUDES = -ID:/Projects/simple_db/include
   OBJECT_DIR = CMakeFiles\simpledb.dir
   OBJECT_FILE_DIR = CMakeFiles\simpledb.dir\src
 
 build CMakeFiles/simpledb.dir/src/table.cpp.obj: CXX_COMPILER__simpledb_unscanned_Debug D$:/Projects/simple_db/src/table.cpp || cmake_object_order_depends_target_simpledb
   DEP_FILE = CMakeFiles\simpledb.dir\src\table.cpp.obj.d
-  FLAGS = -g -fdiagnostics-color=always
+  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
   INCLUDES = -ID:/Projects/simple_db/include
   OBJECT_DIR = CMakeFiles\simpledb.dir
   OBJECT_FILE_DIR = CMakeFiles\simpledb.dir\src
 
 build CMakeFiles/simpledb.dir/src/file_manager.cpp.obj: CXX_COMPILER__simpledb_unscanned_Debug D$:/Projects/simple_db/src/file_manager.cpp || cmake_object_order_depends_target_simpledb
   DEP_FILE = CMakeFiles\simpledb.dir\src\file_manager.cpp.obj.d
-  FLAGS = -g -fdiagnostics-color=always
+  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
+  INCLUDES = -ID:/Projects/simple_db/include
+  OBJECT_DIR = CMakeFiles\simpledb.dir
+  OBJECT_FILE_DIR = CMakeFiles\simpledb.dir\src
+
+build CMakeFiles/simpledb.dir/src/command_parser.cpp.obj: CXX_COMPILER__simpledb_unscanned_Debug D$:/Projects/simple_db/src/command_parser.cpp || cmake_object_order_depends_target_simpledb
+  DEP_FILE = CMakeFiles\simpledb.dir\src\command_parser.cpp.obj.d
+  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
   INCLUDES = -ID:/Projects/simple_db/include
   OBJECT_DIR = CMakeFiles\simpledb.dir
   OBJECT_FILE_DIR = CMakeFiles\simpledb.dir\src
@@ -78,7 +85,7 @@ build CMakeFiles/simpledb.dir/src/file_manager.cpp.obj: CXX_COMPILER__simpledb_u
 #############################################
 # Link the executable simpledb.exe
 
-build simpledb.exe: CXX_EXECUTABLE_LINKER__simpledb_Debug CMakeFiles/simpledb.dir/src/main.cpp.obj CMakeFiles/simpledb.dir/src/table.cpp.obj CMakeFiles/simpledb.dir/src/file_manager.cpp.obj
+build simpledb.exe: CXX_EXECUTABLE_LINKER__simpledb_Debug CMakeFiles/simpledb.dir/src/main.cpp.obj CMakeFiles/simpledb.dir/src/table.cpp.obj CMakeFiles/simpledb.dir/src/file_manager.cpp.obj CMakeFiles/simpledb.dir/src/command_parser.cpp.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\simpledb.dir

@@ -1,5 +1,11 @@
 # ninja log v6
-1	181	7559209270571623	build.ninja	fc6ebbf0688e98
-2	169	7559016941096431	CMakeFiles/simpledb.dir/src/main.cpp.obj	57e7fe45ad01000b
-13	35	7559015168085437	CMakeFiles/simpledb.dir/src/table.cpp.obj	50ebce29e7c73481
-169	208	7559016942756602	simpledb.exe	9c34d776731d62eb
+4	591	7677285287407825	CMakeFiles/simpledb.dir/src/file_manager.cpp.obj	36e9e14d75b6a09
+5	1562	7677285287427828	CMakeFiles/simpledb.dir/src/command_parser.cpp.obj	11376bf5752d3edf
+1	1308	7677285287377726	CMakeFiles/simpledb.dir/src/main.cpp.obj	3e972e951f168cc2
+1	211	7677285589498353	build.ninja	fc6ebbf0688e98
+16	756	7677285590117978	CMakeFiles/simpledb.dir/src/file_manager.cpp.obj	1231d76564a6a496
+13	1462	7677285590087979	CMakeFiles/simpledb.dir/src/main.cpp.obj	b6bf012f24417589
+17	1740	7677285590127979	CMakeFiles/simpledb.dir/src/command_parser.cpp.obj	9f9577e1f0f70ab5
+8	1449	7677306120952814	CMakeFiles/simpledb.dir/src/main.cpp.obj	b6bf012f24417589
+9	822	7677309165839068	CMakeFiles/simpledb.dir/src/table.cpp.obj	cb390f77c04a9e30
+822	2311	7677309173969048	simpledb.exe	dc8ed95f6ba607aa

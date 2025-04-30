@@ -25,10 +25,8 @@ struct ParsedCommand {
     Command_Types type = ERROR;
     string table_name;
 
-    // Для CREATE TABLE
     vector<pair<string, string>> new_columns; // {name, type}
 
-    // Для SELECT
     string columns;
     string values;
     string where_column;
