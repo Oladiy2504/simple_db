@@ -54,3 +54,4 @@ private:
     static Condition parseCondition(const string& op);
     static pair<string, string> extractColumnAndValue(const string& condition, string& op);
 };
+
