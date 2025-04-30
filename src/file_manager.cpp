@@ -150,32 +150,49 @@ vector<vector<string> > FileManager::select_all() {
     return rows;
 }
 
-void FileManager::update_rows(vector<vector<string>> &rows) {
-    ofstream file(file_path, ios::binary);
+void FileManager::update_rows(size_t column_index, const string& new_value, const vector<size_t>& row_indices) {
+    fstream file(file_path, ios::binary | ios::in | ios::out);
     if (!file.is_open()) {
-        throw runtime_error("Failed to open file for writing updated rows");
+        throw runtime_error("Failed to open file for updating rows");
     }
 
-    file.seekp(0, ios::end);
-    size_t file_length = file.tellp();
     size_t metadata_size = sizeof(size_t) + table_name.size();
-    for (const auto &col: columns) {
+    for (const auto &col : columns) {
         metadata_size += sizeof(size_t);
         metadata_size += col.name.size();
         metadata_size += sizeof(Types);
     }
-    file.seekp(static_cast<streamoff>(metadata_size), ios::beg);
 
-    for (const auto &row : rows) {
-        for (size_t i = 0; i < row.size(); ++i) {
-            check_column_datatype(row[i], i);
-            size_t length = row[i].length();
-            file.write(reinterpret_cast<char *>(&length), sizeof(length));
-            file.write(row[i].data(), length);
+    size_t data_offset = metadata_size;
+    size_t new_value_length = new_value.length();
+
+    for (size_t row_index : row_indices) {
+        size_t row_offset = data_offset;
+        for (size_t i = 0; i < row_index; ++i) {
+            for (size_t j = 0; j < columns.size(); ++j) {
+                size_t length;
+                file.seekg(row_offset, ios::beg);
+                file.read(reinterpret_cast<char*>(&length), sizeof(length));
+                row_offset += sizeof(length) + length;
+            }
         }
+
+        size_t column_offset = row_offset;
+        for (size_t i = 0; i < column_index; ++i) {
+            size_t length;
+            file.seekg(column_offset, ios::beg);
+            file.read(reinterpret_cast<char*>(&length), sizeof(length));
+            column_offset += sizeof(length) + length;
+        }
+
+        file.seekg(column_offset, ios::beg);
+        file.write(reinterpret_cast<char*>(&new_value_length), sizeof(new_value_length));
+        file.write(new_value.data(), new_value_length);
     }
+
     file.close();
 }
+
 
 // Перезапись строк после удаления
 void FileManager::overwrite_rows(vector<vector<string>> &rows) {

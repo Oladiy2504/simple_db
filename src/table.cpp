@@ -77,14 +77,15 @@ void Table::update(const string &column_name, Condition condition, const string 
     size_t column_ind = get_column_index(column_name);
     size_t condition_column_ind = get_column_index(condition_column);
 
+    vector<size_t> row_indices;
     auto rows = file.select_all();
     for (size_t i = 0; i < rows.size(); ++i) {
-        if (condition_check(rows[i][condition_column_ind], condition_value, condition, file.columns[i].type)) {
-            rows[i][column_ind] = value;
+        if (condition_check(rows[i][condition_column_ind], condition_value, condition, file.columns[condition_column_ind].type)) {
+            row_indices.push_back(i);
         }
     }
-    if (!rows.empty()) {
-        file.update_rows(rows);
+    if (!row_indices.empty()) {
+        file.update_rows(column_ind, value, row_indices); // Pass the row indices
     }
 }
 
