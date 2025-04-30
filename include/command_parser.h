@@ -1,5 +1,6 @@
 #pragma once
 #include <includes.h>
+#include<file_manager.h>
 
 enum Command_Types {
     ERROR = -1,
@@ -25,7 +26,7 @@ struct ParsedCommand {
     Command_Types type = ERROR;
     string table_name;
 
-    vector<pair<string, string>> new_columns; // {name, type}
+    vector<Column> new_columns; // {name, type}
 
     string columns;
     string values;
@@ -36,20 +37,29 @@ struct ParsedCommand {
 
 class SimpleDBParser {
 public:
-    static string trim(const string& str);
+    static string trim(const string &str);
+
+    static Types string_to_type(string &s);
 
     ParsedCommand parse(const string &command) const;
 
 private:
-    std::regex createTableRegex{R"(^CREATE\s+TABLE\s+(\w+)\s*$\s*([^()]*)\s*$\s*;\s*$)"};
+    std::regex createTableRegex{
+        R"(^CREATE\s+TABLE\s+(\w+)\s*\(\s*([^)]*)\s*\)\s*;?\s*$)",
+        std::regex_constants::icase
+    };
     std::regex insertIntoRegex{R"(^INSERT\s+INTO\s+(\w+)\s*$\s*([^()]*)\s*$\s+VALUES\s*$\s*([^()]*)\s*$\s*;\s*$)"};
-    std::regex selectRegex{R"(^SELECT\s+(\*|[\w\s,]+)\s+FROM\s+(\w+)(?:\s+WHERE\s+(.*?))?(?:\s+ORDER\s+BY\s+([\w\s,]+))?\s*;\s*$)"};
+    std::regex selectRegex{
+        R"(^SELECT\s+(\*|[\w\s,]+)\s+FROM\s+(\w+)\s+(?:WHERE\s+(\w+)\s*(=|!=|<|<=|>|>=)\s*(\S+))?\s*;\s*$)",
+        std::regex_constants::icase
+    };
     std::regex updateRegex{R"(^UPDATE\s+(\w+)\s+SET\s+(.*?)\s+WHERE\s+(.*?)\s*;\s*$)"};
     std::regex deleteRegex{R"(^DELETE\s+FROM\s+(\w+)(?:\s+WHERE\s+(.*?))?\s*;\s*$)"};
 
     // Не не не, помощь ПОМОЩЬ
-    static vector<string> splitIdentifiers(const string& input);
-    static Condition parseCondition(const string& op);
-    static pair<string, string> extractColumnAndValue(const string& condition, string& op);
-};
+    static vector<string> splitIdentifiers(const string &input, char delim = ' ');
 
+    static Condition parseCondition(const string &op);
+
+    static pair<string, string> extractColumnAndValue(const string &condition, string &op);
+};

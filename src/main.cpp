@@ -8,43 +8,53 @@ main принимает ввод команд для баз данных в па
 
 
 int main() {
-    std::string line;
+    string line;
 
-    std::cout << "Петрович, врубай насос" << std::endl;
+    cout << "Petrovich, vrubai nasos!" << endl;
 
     while (true) {
         SimpleDBParser parser;
-        std::cout << "simpledb> ";
-        std::getline(std::cin, line);
+        cout << "simpledb> ";
+        getline(cin, line);
 
         if (line == "QUIT") {
-            std::cout << "Петрович, вырубай насос" << std::endl;
+            std::cout << "Petrovich, virubai nasos!" << endl;
             break;
         }
 
-        if (line.empty()) continue;
+        if (line.empty()) {
+            continue;
+        }
 
         ParsedCommand cmd = parser.parse(line);
 
+        unordered_map<string, Table> tables;
+
+        string file_path = "../data/" + cmd.table_name;
+
         switch (cmd.type) {
             case CREATE_TABLE:
-                // делай стол
-
-            case INSERT:
-                // делай вставку
+                if (tables.find(cmd.table_name) == tables.end()) {
+                    tables.emplace(cmd.table_name, Table(file_path, cmd.table_name));
+                }
+                tables.at(cmd.table_name).create_table(cmd.table_name, cmd.new_columns);
+                break;
 
             case SELECT:
-                // делай выборку
+                // тут код
+
+            case INSERT:
+                // тут код
 
             case UPDATE:
-                // делай обновление
+                // тут код
 
             case DELETE:
-                // делай удаление
+                // тут код
 
             case ERROR:
             default:
-                std::cerr << "Ну ты и тупой, Петрович!" << std::endl;
+                std::cerr << "Nu ti i tupoi, Petrovich!" << endl;
         }
     }
 }

@@ -31,7 +31,7 @@ public:
 
     void write_row(const vector<string> &row);
 
-    void update_rows(vector<vector<string>> &rows);
+    void update_rows(size_t column_index, const string& new_value, const vector<size_t>& row_indices);
 
     void overwrite_rows(vector<vector<string>> &rows);
 

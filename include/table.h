@@ -6,12 +6,16 @@
 class Table {
     FileManager file;
 
+    string table_name;
+
     bool condition_check(const string &real_value, const string &value, Condition condition, int type);
 
     size_t get_column_index(const string &column_name);
 
 public:
-    Table(const string& file_path, const string& name, const vector<Column> &columns);
+    explicit Table(const string& file_path, const string& table_name);
+
+    void create_table(const string& name, const vector<Column> &columns);
 
     void insert(const vector<string>& values);
 

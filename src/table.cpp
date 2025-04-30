@@ -20,10 +20,12 @@ bool string_is_integer(const string &s) {
 }
 
 
-Table::Table(const string &file_path, const string &name,
-             const vector<Column> &columns) : file(FileManager(file_path)) {
+Table::Table(const string &file_path, const string& table_name) : file(FileManager(file_path)), table_name(table_name) {}
+
+void Table::create_table(const string &name, const vector<Column> &columns) {
     file.create_table(name, columns);
 }
+
 
 void Table::insert(const vector<string> &values) {
     file.write_row(values);
@@ -80,7 +82,8 @@ void Table::update(const string &column_name, Condition condition, const string 
     vector<size_t> row_indices;
     auto rows = file.select_all();
     for (size_t i = 0; i < rows.size(); ++i) {
-        if (condition_check(rows[i][condition_column_ind], condition_value, condition, file.columns[condition_column_ind].type)) {
+        if (condition_check(rows[i][condition_column_ind], condition_value, condition,
+                            file.columns[condition_column_ind].type)) {
             row_indices.push_back(i);
         }
     }

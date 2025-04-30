@@ -13,7 +13,7 @@
 
 FileManager::FileManager(const string &file_path) {
     this->file_path = file_path;
-    ifstream file(file_path, ios::binary);
+    fstream file(file_path, ios::out | ios::binary);
     if (!file.is_open()) {
         throw runtime_error("Failed to open file while initializing file manager");
     }
@@ -63,22 +63,22 @@ void FileManager::write_metadata() {
     size_t column_count = columns.size();
     file.write(reinterpret_cast<char *>(&column_count), sizeof(column_count));
     for (size_t i = 0; i < column_count; ++i) {
-        file.write(reinterpret_cast<char *>(&length), sizeof(length));
-        file.write(columns[i].name.data(), length);
-        size_t type = columns[i].type;
-        file.write(reinterpret_cast<char *>(&type), sizeof(&type));
+        size_t column_name_length = columns[i].name.length();
+        file.write(reinterpret_cast<char *>(&column_name_length), sizeof(column_name_length));
+        file.write(columns[i].name.data(), column_name_length);
+
+        Types type = columns[i].type;
+        file.write(reinterpret_cast<char *>(&type), sizeof(type));
     }
     file.close();
 }
 
 // Создание таблицы
-void FileManager::create_table(const string &name, const vector<Column> &columns) {
-    if (!columns.empty()) {
-        throw runtime_error("Trying to overwrite existing table");
-    }
+void FileManager::create_table(const string &name, const vector<Column> &new_columns) {
     table_name = name;
-    this->columns = columns;
+    this->columns = new_columns;
     write_metadata();
+    read_metadata();
 }
 
 // Проверка того, что переданные данные соответствуют ожидаемым для столбца

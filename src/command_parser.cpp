@@ -10,16 +10,29 @@ string SimpleDBParser::trim(const string& str) {
     return str.substr(first, last - first + 1);
 }
 
+Types SimpleDBParser::string_to_type(string &s) {
+    if (s == "INT") {
+        return INT;
+    }
+    if (s == "TEXT") {
+        return TEXT;
+    }
+    throw runtime_error("Wrong type: " + s + " The only possible types are: INT, TEXT");
+}
+
+
 // Разделение строки на идентификаторы
-vector<string> SimpleDBParser::splitIdentifiers(const string& input) {
+vector<string> SimpleDBParser::splitIdentifiers(const string& input, char delim) {
     vector<string> result;
-    if (input.empty()) return result;
+    if (input.empty()) {
+        return result;
+    }
 
     const string trimmed = trim(input);
     istringstream ss(trimmed);
     string token;
 
-    while (getline(ss, token, ',')) {
+    while (getline(ss, token, delim)) {
         result.push_back(trim(token));
     }
     return result;
@@ -70,11 +83,11 @@ ParsedCommand SimpleDBParser::parse(const string &command) const {
     if (regex_match(trimmedCommand, match, createTableRegex)) {
         result.type = CREATE_TABLE;
         result.table_name = match[1];
-        vector<string> columns = splitIdentifiers(match[2]);
+        vector<string> columns = splitIdentifiers(match[2], ',');
         for (const string& column : columns) {
             vector<string> values = splitIdentifiers(column);
             if (values.size() == 2) {
-                result.new_columns.push_back(make_pair(values[0], values[1]));
+                result.new_columns.push_back(Column{values[0], string_to_type(values[1])});
             }
         }
         return result;
