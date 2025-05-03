@@ -2,11 +2,11 @@
 
 // Удаление пробелов в начале и конце строки
 string SimpleDBParser::trim(const string& str) {
-    const size_t first = str.find_first_not_of(" \t\n\r");
+    const size_t first = str.find_first_not_of(" \t\n\r(\"\'");
     if (first == string::npos) {
         return "";
     }
-    const size_t last = str.find_last_not_of(" \t\n\r");
+    const size_t last = str.find_last_not_of(" \t\n\r)\"\'");
     return str.substr(first, last - first + 1);
 }
 
@@ -80,7 +80,7 @@ ParsedCommand SimpleDBParser::parse(const string &command) const {
     }
 
     // создание таблицы
-    if (regex_match(trimmedCommand, match, createTableRegex)) {
+    if (regex_match(trimmedCommand, match, createRegex)) {
         result.type = CREATE_TABLE;
         result.table_name = match[1];
         vector<string> columns = splitIdentifiers(match[2], ',');
@@ -94,12 +94,15 @@ ParsedCommand SimpleDBParser::parse(const string &command) const {
     }
 
     // вставка данных
-    if (regex_match(trimmedCommand, match, insertIntoRegex)) {
+    if (regex_match(trimmedCommand, match, insertRegex)) {
         if (match.size() > 2) {
             result.type = INSERT;
             result.table_name = match[1];
-            result.columns = match[2];
-            result.values = match[3];
+            result.columns = splitIdentifiers(match[2], ',');
+            result.values = splitIdentifiers(match[3], ',');
+            for (auto & value : result.values) {
+                value = trim(value);
+            }
         }
         return result;
     }
@@ -111,16 +114,18 @@ ParsedCommand SimpleDBParser::parse(const string &command) const {
             result.table_name = match[2];
 
             if (match[1] == "*") {
-                result.columns = "*";
+                result.columns = {};
+            } else {
+                result.columns = splitIdentifiers(trim(match[1]), ',');
+            }
+
+            if (match[3].length() == 0) {
                 result.where_condition = ALL;
             } else {
-                result.columns = match[1];
+                result.where_column = trim(match[3]);
+                result.where_condition = parseCondition(match[4]);
+                result.where_value = trim(match[5]);
             }
-            string conditionOp;
-            auto conditionInfo = extractColumnAndValue(match[3], conditionOp);
-            result.where_column = conditionInfo.first;
-            result.where_value = conditionInfo.second;
-            result.where_condition = parseCondition(conditionOp);
         }
         return result;
     }
@@ -130,8 +135,8 @@ ParsedCommand SimpleDBParser::parse(const string &command) const {
         if (match.size() > 4) {
             result.type = UPDATE;
             result.table_name = match[1];
-            result.columns = match[2];
-            result.values = match[3];
+            // result.columns = match[2];
+            // result.values = match[3];
 
             string conditionOp;
             auto conditionInfo = extractColumnAndValue(match[4], conditionOp);

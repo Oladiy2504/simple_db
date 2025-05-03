@@ -12,6 +12,8 @@ int main() {
 
     cout << "Petrovich, vrubai nasos!" << endl;
 
+    unordered_map<string, Table> tables;
+
     while (true) {
         SimpleDBParser parser;
         cout << "simpledb> ";
@@ -28,33 +30,24 @@ int main() {
 
         ParsedCommand cmd = parser.parse(line);
 
-        unordered_map<string, Table> tables;
-
         string file_path = "../data/" + cmd.table_name;
 
-        switch (cmd.type) {
-            case CREATE_TABLE:
-                if (tables.find(cmd.table_name) == tables.end()) {
-                    tables.emplace(cmd.table_name, Table(file_path, cmd.table_name));
+        if (!tables.contains(cmd.table_name)) {
+            tables.emplace(cmd.table_name, Table(file_path, cmd.table_name));
+        }
+
+        if (cmd.type == CREATE_TABLE) {
+            tables.at(cmd.table_name).create_table(cmd.table_name, cmd.new_columns);
+        } else if (cmd.type == SELECT) {
+            auto result = tables.at(cmd.table_name).select(cmd.where_condition, cmd.where_column, cmd.where_value);
+            for (auto &row: result) {
+                for (auto &col: row) {
+                    cout << col << ' ';
                 }
-                tables.at(cmd.table_name).create_table(cmd.table_name, cmd.new_columns);
-                break;
-
-            case SELECT:
-                // тут код
-
-            case INSERT:
-                // тут код
-
-            case UPDATE:
-                // тут код
-
-            case DELETE:
-                // тут код
-
-            case ERROR:
-            default:
-                std::cerr << "Nu ti i tupoi, Petrovich!" << endl;
+                cout << '\n';
+            }
+        } else if (cmd.type == INSERT) {
+            tables.at(cmd.table_name).insert(cmd.values);
         }
     }
 }

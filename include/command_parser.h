@@ -28,8 +28,8 @@ struct ParsedCommand {
 
     vector<Column> new_columns; // {name, type}
 
-    string columns;
-    string values;
+    vector<string> columns;
+    vector<string> values;
     string where_column;
     Condition where_condition = ALL;
     string where_value;
@@ -44,13 +44,16 @@ public:
     ParsedCommand parse(const string &command) const;
 
 private:
-    std::regex createTableRegex{
+    std::regex createRegex{
         R"(^CREATE\s+TABLE\s+(\w+)\s*\(\s*([^)]*)\s*\)\s*;?\s*$)",
         std::regex_constants::icase
     };
-    std::regex insertIntoRegex{R"(^INSERT\s+INTO\s+(\w+)\s*$\s*([^()]*)\s*$\s+VALUES\s*$\s*([^()]*)\s*$\s*;\s*$)"};
+    std::regex insertRegex{
+        R"(^INSERT\s+INTO\s+(\w+)\s*\(\s*(\w+(?:\s*,\s*\w+)*)\s*\)\s+VALUES\s*\(\s*((?:\d+|'.*?'|\".*?\")(?:\s*,\s*(?:\d+|'.*?'|\".*?\"))*)\s*\)\s*;?\s*$)",
+        std::regex_constants::icase
+    };
     std::regex selectRegex{
-        R"(^SELECT\s+(\*|[\w\s,]+)\s+FROM\s+(\w+)\s+(?:WHERE\s+(\w+)\s*(=|!=|<|<=|>|>=)\s*(\S+))?\s*;\s*$)",
+        R"(^SELECT\s+(\*|\(\s*\w+(?:\s*,\s*\w+)*\s*\))\s+FROM\s+(\w+)(?:\s+WHERE\s+(\w+)\s*(=|!=|<=|>=|<|>)\s*(\d+|\"[^\"]*\"))?\s*;?\s*$)",
         std::regex_constants::icase
     };
     std::regex updateRegex{R"(^UPDATE\s+(\w+)\s+SET\s+(.*?)\s+WHERE\s+(.*?)\s*;\s*$)"};
